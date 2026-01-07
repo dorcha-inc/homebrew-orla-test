@@ -3,7 +3,7 @@ cask "orla" do
   name "orla"
   desc "A dead-simple unix tool for lightweight agents"
   homepage "https://github.com/dorcha-inc/orla"
-  version "0.0.0-test-20260107-031218"
+  version "0.0.0-test-20260107-033702"
 
   livecheck do
     skip "Auto-generated on release."
@@ -14,27 +14,32 @@ cask "orla" do
   on_macos do
     on_intel do
       url "https://github.com/dorcha-inc/orla/releases/download/v#{version}/orla-darwin-amd64.tar.gz"
-      sha256 "71e8111dae68e511d225d1b91838f1d2566ee2f4e113c391c4570bf524e4d541"
+      sha256 "f6b24687883ba6ccbc66e176bc770ade318ec1a99a0c41eaf8ae8331d9a33247"
     end
     on_arm do
       url "https://github.com/dorcha-inc/orla/releases/download/v#{version}/orla-darwin-arm64.tar.gz"
-      sha256 "b713a6ce6b44ebda63e6deeed7c57093516d95d2a8152866121d020ad20ca2a6"
+      sha256 "1ac2400d7cda29f39c22d204d25b4aca9239b363506a46b07809b280d8a65beb"
     end
   end
 
   on_linux do
     on_intel do
       url "https://github.com/dorcha-inc/orla/releases/download/v#{version}/orla-linux-amd64.tar.gz"
-      sha256 "9c401021dc51e5fb5bb322abd7d1a446be2b3849c858e6af22c184e10984ca66"
+      sha256 "6f8cf0cdc408cc5f473bf776dd60e3ea3c9b72cd174103c38a44c5a560bf6c6f"
     end
     on_arm do
       url "https://github.com/dorcha-inc/orla/releases/download/v#{version}/orla-linux-arm64.tar.gz"
-      sha256 "5b9e67819a1371704d77262db9b4b71ae8ccf1ab25cb7448890efa588856e80d"
+      sha256 "a621034a979a25f763306271a58fc8b148df40b01d73a4f78ff7690fbf838f3b"
     end
   end
 
   postflight do
-    system "/bin/sh", "-c", "export PATH=\"/home/linuxbrew/.linuxbrew/bin:/opt/homebrew/bin:/usr/local/bin:$PATH\" && if [ \"$ORLA_SKIP_OLLAMA\" = \"1\" ]; then curl -fsSL https://raw.githubusercontent.com/dorcha-inc/orla/main/scripts/install.sh | sh -s -- --homebrew --skip-ollama; else curl -fsSL https://raw.githubusercontent.com/dorcha-inc/orla/main/scripts/install.sh | sh -s -- --homebrew; fi"
+    skip_ollama = ENV["HOMEBREW_ORLA_SKIP_OLLAMA"] == "1"
+    if skip_ollama
+      system "/bin/sh", "-c", "export PATH=\"/home/linuxbrew/.linuxbrew/bin:/opt/homebrew/bin:/usr/local/bin:$PATH\" && curl -fsSL https://raw.githubusercontent.com/dorcha-inc/orla/main/scripts/install.sh | sh -s -- --homebrew --skip-ollama"
+    else
+      system "/bin/sh", "-c", "export PATH=\"/home/linuxbrew/.linuxbrew/bin:/opt/homebrew/bin:/usr/local/bin:$PATH\" && curl -fsSL https://raw.githubusercontent.com/dorcha-inc/orla/main/scripts/install.sh | sh -s -- --homebrew"
+    end
   end
 
   # No zap stanza required
